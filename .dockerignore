@@ -1,0 +1,6 @@
+# Ignore git history
+.git
+# Ignore build artifacts
+target/
+# Ignore local environment file
+.env

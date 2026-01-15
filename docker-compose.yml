@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Service untuk aplikasi Rust
+  app:
+    # Membangun image dari Dockerfile di direktori saat ini
+    build: .
+    # Menamakan container agar mudah diidentifikasi
+    container_name: rust_auth_app
+    # Mengatur agar container restart secara otomatis jika gagal
+    restart: unless-stopped
+    # Bergantung pada service 'db', memastikan 'db' dimulai terlebih dahulu
+    depends_on:
+      - db
+    # Memetakan port 8080 di host ke port 8080 di container
+    ports:
+      - "8080:8080"
+    # Mengatur variabel lingkungan yang dibutuhkan oleh aplikasi
+    environment:
+      # PENTING: Gunakan nama service 'db' sebagai host database
+      - DATABASE_URL=postgres://myuser:mypassword@db:5432/mydatabase
+      - JWT_SECRET=${JWT_SECRET} # Mengambil dari file .env di host
+      - RUST_LOG=info # Mengatur level log
+    networks:
+      - app-network
+
+  # Service untuk database PostgreSQL
+  db:
+    # Menggunakan image PostgreSQL resmi
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: unless-stopped
+    # Mengatur variabel lingkungan untuk konfigurasi database
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydatabase
+    # Menyimpan data database di volume agar tidak hilang saat container di-restart
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      # (Opsional) Buka port 5432 jika Anda ingin mengakses DB dari host
+      - "5432:5432"
+    networks:
+      - app-network
+
+# Mendefinisikan network yang akan digunakan oleh service
+networks:
+  app-network:
+    driver: bridge
+
+# Mendefinisikan volume yang akan digunakan oleh service 'db'
+volumes:
+  postgres_data:
+    driver: local
