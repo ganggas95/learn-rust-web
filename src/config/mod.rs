@@ -3,7 +3,7 @@ use std::env;
 
 #[derive(Clone)]
 pub struct AppConfig {
-    pub db_url: String,
+    pub database_url: String,
     pub jwt_secret: String,
     pub max_connections: u32,
     pub server_host: String,
@@ -20,7 +20,7 @@ impl AppConfig {
         let server_host = env::var("SERVER_HOST").unwrap_or("127.0.0.1".to_string());
         let server_port = env::var("SERVER_PORT").unwrap_or("8080".to_string());
         Self {
-            db_url,
+            database_url: db_url,
             max_connections: max_connection.parse().unwrap_or(5),
             jwt_secret,
             server_host,

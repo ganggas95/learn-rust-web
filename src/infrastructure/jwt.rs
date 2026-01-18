@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::future::{Ready, ready};
-use crate::domain::error::AppError;
-use crate::domain::AppState;
+use crate::infrastructure::error::AppError;
+use crate::infrastructure::state::AppState;
 use actix_web::{FromRequest, web};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 

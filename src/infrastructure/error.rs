@@ -6,6 +6,7 @@ pub enum AppError {
     Internal(String),
     Conflict(String),
     Unauthorized(String),
+    NotFound(String),
 }
 
 impl fmt::Display for AppError {
@@ -14,6 +15,7 @@ impl fmt::Display for AppError {
             AppError::Internal(msg) => write!(f, "Internal server error: {}", msg),
             AppError::Conflict(msg) => write!(f, "Conflict: {}", msg),
             AppError::Unauthorized(msg) => write!(f, "Unauthorized: {}", msg),
+            AppError::NotFound(msg) => write!(f, "Not Found: {}", msg),
         }
     }
 }
@@ -24,6 +26,7 @@ impl ResponseError for AppError {
             AppError::Internal(msg) => HttpResponse::InternalServerError().body(msg.clone()),
             AppError::Conflict(msg) => HttpResponse::Conflict().body(msg.clone()),
             AppError::Unauthorized(msg) => HttpResponse::Unauthorized().body(msg.clone()),
+            AppError::NotFound(msg) => HttpResponse::NotFound().body(msg.clone()),
         }
     }
 }

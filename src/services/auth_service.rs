@@ -1,7 +1,7 @@
 // mod domain;
-use crate::AppError;
-use crate::domain::jwt::Claims;
-use crate::UserResult;
+use crate::infrastructure::error::AppError;
+use crate::infrastructure::jwt::Claims;
+use crate::domain::user::UserResult;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{EncodingKey, Header, encode};
 
