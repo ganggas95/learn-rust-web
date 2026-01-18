@@ -18,9 +18,11 @@ services:
     # Mengatur variabel lingkungan yang dibutuhkan oleh aplikasi
     environment:
       # PENTING: Gunakan nama service 'db' sebagai host database
-      - DATABASE_URL=postgres://myuser:mypassword@db:5432/mydatabase
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - JWT_SECRET=${JWT_SECRET} # Mengambil dari file .env di host
       - RUST_LOG=info # Mengatur level log
+    env_file:
+      - .env
     networks:
       - app-network
 
@@ -30,14 +32,14 @@ services:
     image: postgres:15-alpine
     container_name: postgres_db
     restart: unless-stopped
-    # Mengatur variabel lingkungan untuk konfigurasi database
-    environment:
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=mypassword
-      - POSTGRES_DB=mydatabase
+    # Mengatur variabel lingkungan dari file .env.db
+    env_file:
+      - .env
     # Menyimpan data database di volume agar tidak hilang saat container di-restart
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # Memuat skrip inisialisasi saat container pertama kali dibuat
+      - ./db/init/initialize.sql:/docker-entrypoint-initdb.d/initialize.sql
     ports:
       # (Opsional) Buka port 5432 jika Anda ingin mengakses DB dari host
       - "5432:5432"

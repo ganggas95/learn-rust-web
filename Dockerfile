@@ -1,6 +1,6 @@
 # --- Stage 1: Builder ---
 # Menggunakan image Rust resmi sebagai dasar untuk build
-FROM rust:1.78-slim AS builder
+FROM rust:1.92-slim AS builder
 
 # Membuat direktori kerja di dalam container
 WORKDIR /usr/src/app
@@ -16,6 +16,7 @@ RUN cargo build --release
 
 # Menyalin seluruh kode sumber proyek
 COPY src ./src
+COPY .sqlx ./.sqlx
 
 # Membersihkan dummy file dan membangun aplikasi secara penuh
 RUN rm -f target/release/deps/rust_lesson*
@@ -23,7 +24,7 @@ RUN cargo build --release
 
 # --- Stage 2: Final Image ---
 # Menggunakan image dasar yang kecil untuk image akhir
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # Menetapkan argumen non-interaktif untuk instalasi paket
 ARG DEBIAN_FRONTEND=noninteractive
